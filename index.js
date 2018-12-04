@@ -1,10 +1,9 @@
 import express from "express";
 import { MongoClient } from "mongodb";
 import api from "./apiroutes";
-import { DBURL } from "./config";
 
 const PORT = process.env.PORT || 80;
-const db_url = process.env.DBURL || DBURL;
+const db_url = process.env.DBURL;
 MongoClient.connect(db_url)
   .then(() => console.log("Connet with MLab\nMongo is running"))
   .catch(err => console.log(err));
