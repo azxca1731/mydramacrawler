@@ -2,6 +2,7 @@ import request from "request";
 import cheerio from "cheerio";
 import express from "express";
 
+let port = process.env.PORT || 80;
 const app = express();
 app.use(express.json());
 
@@ -40,6 +41,6 @@ app.get("/api", async (req, res) => {
   });
 });
 
-app.listen(80, () => {
+app.listen(port, () => {
   console.log("Drama Crawler is running!");
 });
