@@ -4,11 +4,12 @@ import cheerio from "cheerio";
 const router = Router();
 
 router.get("/", async (req, res) => {
+  const page = req.query.page || 1;
   const options = {
     uri: "https://torrenthaja.com/bbs/board.php",
     qs: {
       bo_table: "torrent_drama",
-      page: 1
+      page
     }
   };
   const dramaArray = [];
