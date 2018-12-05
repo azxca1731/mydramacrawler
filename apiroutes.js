@@ -18,6 +18,10 @@ router.get("/", async (req, res) => {
 
   $(".td-subject").map((_, item) => {
     dramaArray.push({
+      index: $(item)
+        .parent()
+        .prev()
+        .text(),
       href: item.children[1].attribs.href,
       title: $(item)
         .children()
@@ -34,7 +38,17 @@ router.get("/", async (req, res) => {
         .attr("onclick")
     };
   });
-  const json = await Promise.all(promiseArray);
+  let json = await Promise.all(promiseArray);
+  json = json.map(({ index, title, magnet }) => {
+    return {
+      index: index.substr(1, index.length),
+      title: title.substr(2, title.length),
+      magnet: magnet.substr(
+        "magnet_link('".length,
+        magnet.length - 3 - "magnet_link('".length
+      )
+    };
+  });
   res.json(json);
 });
 
