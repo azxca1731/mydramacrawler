@@ -1,12 +1,13 @@
 import express from "express";
-import { MongoClient } from "mongodb";
-import api from "./apiroutes";
+import { connection, connect } from "mongoose";
 
 const PORT = process.env.PORT || 80;
 const db_url = process.env.DBURL;
-MongoClient.connect(db_url)
-  .then(() => console.log("Connet with MLab\nMongo is running"))
-  .catch(err => console.log(err));
+connection.on("error", console.error);
+connection.once("open", function() {
+  console.log("Connected to mongod server");
+});
+connect(db_url);
 const app = express();
 app.use(express.json());
 
