@@ -1,8 +1,6 @@
-import { Router } from "express";
 import request from "request-promise";
 import cheerio from "cheerio";
 import VideoInfo from "./models/video_info";
-const router = Router();
 
 const dramaParser = dramaString => {
   let others = dramaString;
@@ -16,10 +14,7 @@ const dramaParser = dramaString => {
   return { title, episode, broadcastdate, quality };
 };
 
-router.get("/example", async (req, res) => {
-  console.log(dramaParser("비밀과 거짓말.E98.181206.720p-NEXT"));
-});
-router.get("/", async (req, res) => {
+export const crawl = async option => {
   const options = {
     uri: "https://torrenthaja.com/bbs/board.php",
     qs: {
@@ -32,7 +27,6 @@ router.get("/", async (req, res) => {
     .sort({ index: -1 })
     .limit(1);
   if (recentVideoInfo.length === 0) recentVideoInfo = [{ index: 0 }];
-  console.log(recentVideoInfo[0].index);
   let body = await request(options);
   const $ = cheerio.load(body);
 
@@ -65,11 +59,12 @@ router.get("/", async (req, res) => {
           .attr("onclick")
       };
     });
+  let json;
   try {
-    let json = await Promise.all(promiseArray);
+    json = await Promise.all(promiseArray);
   } catch (err) {
-    let json = [];
     console.log(err);
+    return false;
   }
 
   json = json.map(async ({ index, crawledtitle, magnet }) => {
@@ -89,11 +84,9 @@ router.get("/", async (req, res) => {
   });
   try {
     json = await Promise.all(json);
+    return true;
   } catch (err) {
     console.log(err);
-    json = [];
+    return false;
   }
-  res.json(json);
-});
-
-export default router;
+};

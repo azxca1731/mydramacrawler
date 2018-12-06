@@ -1,5 +1,8 @@
 import express from "express";
+import cron from "node-cron";
 import { connection, connect } from "mongoose";
+import { crawl } from "./crawl";
+import api from "./apiroutes";
 
 const PORT = process.env.PORT || 80;
 const db_url = process.env.DBURL;
@@ -21,3 +24,5 @@ app.use("/api", api);
 app.listen(PORT, () => {
   console.log("Drama Crawler is running!");
 });
+
+cron.schedule("0 */6 * * *", crawl);
